@@ -1,21 +1,31 @@
 import pandas as pd
 
+
 def calculate_scores(df):
 
     # Convert columns to numeric
-    df["Price"] = pd.to_numeric(df["Price"])
+    df["Price"] = pd.to_numeric(
+        df["Price"],
+        errors="coerce"
+    )
 
     df["Delivery_Days"] = pd.to_numeric(
-        df["Delivery_Days"]
+        df["Delivery_Days"],
+        errors="coerce"
     )
 
     df["Warranty_Years"] = pd.to_numeric(
-        df["Warranty_Years"]
+        df["Warranty_Years"],
+        errors="coerce"
     )
 
     df["Support_Rating"] = pd.to_numeric(
-        df["Support_Rating"]
+        df["Support_Rating"],
+        errors="coerce"
     )
+
+    # Remove invalid rows
+    df = df.dropna()
 
     # Maximum values
     max_price = df["Price"].max()
@@ -28,26 +38,32 @@ def calculate_scores(df):
 
     scores = []
 
+    risk_levels = []
+
     for _, row in df.iterrows():
 
-        # Lower price is better
+        # Price Score (Lower Price Better)
         price_score = (
-            (max_price - row["Price"]) / max_price
+            (max_price - row["Price"])
+            / max_price
         ) * 40
 
-        # Faster delivery is better
+        # Delivery Score (Faster Delivery Better)
         delivery_score = (
-            (max_delivery - row["Delivery_Days"]) / max_delivery
+            (max_delivery - row["Delivery_Days"])
+            / max_delivery
         ) * 25
 
-        # Higher warranty is better
+        # Warranty Score
         warranty_score = (
-            row["Warranty_Years"] / max_warranty
+            row["Warranty_Years"]
+            / max_warranty
         ) * 20
 
-        # Better support rating
+        # Support Score
         support_score = (
-            row["Support_Rating"] / max_support
+            row["Support_Rating"]
+            / max_support
         ) * 15
 
         total_score = (
@@ -61,9 +77,39 @@ def calculate_scores(df):
             round(total_score, 2)
         )
 
+        # Risk Classification
+        if row["Delivery_Days"] > 15:
+
+            risk_levels.append(
+                "High"
+            )
+
+        elif row["Price"] > 55000:
+
+            risk_levels.append(
+                "Medium"
+            )
+
+        else:
+
+            risk_levels.append(
+                "Low"
+            )
+
+    # Add columns
     df["Score"] = scores
 
-    return df.sort_values(
+    df["Risk_Level"] = risk_levels
+
+    # Rank Vendors
+    ranked_df = df.sort_values(
         by="Score",
         ascending=False
     )
+
+    ranked_df.reset_index(
+        drop=True,
+        inplace=True
+    )
+
+    return ranked_df
