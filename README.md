@@ -27,14 +27,14 @@ The system:
 
 # Features
 
-✅ Vendor Ranking System  
-✅ Procurement KPI Dashboard  
-✅ Risk Detection Engine  
-✅ Explainable AI Decisions  
-✅ Vendor Score Visualization  
-✅ Procurement Insights  
-✅ Audit Logging  
-✅ Interactive Dashboard  
+Vendor Ranking System  
+Procurement KPI Dashboard  
+Risk Detection Engine  
+Explainable AI Decisions  
+Vendor Score Visualization  
+Procurement Insights  
+Audit Logging  
+Interactive Dashboard  
 
 ---
 
